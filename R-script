@@ -1,0 +1,69 @@
+##-----------------------------------------------------------------------------------------##
+####HVAD BRUGER DIN KOMMUNE PENGENE PÅ?###
+##-----------------------------------------------------------------------------------------##
+
+##-----------------------------------------------------------------------------------------##
+###Del 1: indlæs nødvendige pakker
+##-----------------------------------------------------------------------------------------##
+
+#Indlæs nødvendige pakker
+library(shiny) #Pakke til interaktive web-apps 
+library(ggplot2) #Pakke til grafer
+library(dplyr) #Pakke til datamanipulation
+library(plotly) #Pakke til interaktive grafer
+library(readr) #Pakke til at læse CSV-filer
+
+
+##-----------------------------------------------------------------------------------------##
+###Del 2: Hente data###
+##-----------------------------------------------------------------------------------------##
+
+#Læs hver fil og tilføj år-kolonne
+data_2016 <- read_csv("C:/Users/m_han/Desktop/Job/GitHub/Hvad bruger din kommune pengene på/Rå data/2016.csv", locale = locale(), col_names = FALSE)
+names(data_2016) <- c("Prisenhed", "Udgiftsart", "Politikområde", "Kommune", "Beløb")
+data_2016$År <- 2016
+
+data_2017 <- read_csv("C:/Users/m_han/Desktop/Job/GitHub/Hvad bruger din kommune pengene på/Rå data/2017.csv", locale = locale(), col_names = FALSE)
+names(data_2017) <- c("Prisenhed", "Udgiftsart", "Politikområde", "Kommune", "Beløb")
+data_2017$År <- 2017
+
+data_2018 <- read_csv("C:/Users/m_han/Desktop/Job/GitHub/Hvad bruger din kommune pengene på/Rå data/2018.csv", locale = locale(), col_names = FALSE)
+names(data_2018) <- c("Prisenhed", "Udgiftsart", "Politikområde", "Kommune", "Beløb")
+data_2018$År <- 2018
+
+data_2019 <- read_csv("C:/Users/m_han/Desktop/Job/GitHub/Hvad bruger din kommune pengene på/Rå data/2019.csv", locale = locale(), col_names = FALSE)
+names(data_2019) <- c("Prisenhed", "Udgiftsart", "Politikområde", "Kommune", "Beløb")
+data_2019$År <- 2019
+
+data_2020 <- read_csv("C:/Users/m_han/Desktop/Job/GitHub/Hvad bruger din kommune pengene på/Rå data/2020.csv", locale = locale(), col_names = FALSE)
+names(data_2020) <- c("Prisenhed", "Udgiftsart", "Politikområde", "Kommune", "Beløb")
+data_2020$År <- 2020
+
+data_2021 <- read_csv("C:/Users/m_han/Desktop/Job/GitHub/Hvad bruger din kommune pengene på/Rå data/2021.csv", locale = locale(), col_names = FALSE)
+names(data_2021) <- c("Prisenhed", "Udgiftsart", "Politikområde", "Kommune", "Beløb")
+data_2021$År <- 2021
+
+data_2022 <- read_csv("C:/Users/m_han/Desktop/Job/GitHub/Hvad bruger din kommune pengene på/Rå data/2022.csv", locale = locale(), col_names = FALSE)
+names(data_2022) <- c("Prisenhed", "Udgiftsart", "Politikområde", "Kommune", "Beløb")
+data_2022$År <- 2022
+
+data_2023 <- read_csv("C:/Users/m_han/Desktop/Job/GitHub/Hvad bruger din kommune pengene på/Rå data/2023.csv", locale = locale(), col_names = FALSE)
+names(data_2023) <- c("Prisenhed", "Udgiftsart", "Politikområde", "Kommune", "Beløb")
+data_2023$År <- 2023
+
+data_2024 <- read_csv("C:/Users/m_han/Desktop/Job/GitHub/Hvad bruger din kommune pengene på/Rå data/2024.csv", locale = locale(), col_names = FALSE)
+names(data_2024) <- c("Prisenhed", "Udgiftsart", "Politikområde", "Kommune", "Beløb")
+data_2024$År <- 2024
+
+#Sæt alle år sammen til ét datasæt
+kommunaleudgifter_data <- bind_rows(data_2016, data_2017, data_2018, data_2019, data_2020, 
+                            data_2021, data_2022, data_2023, data_2024)
+
+#Konverter Beløb til numerisk
+kommunaleudgifter_data$Beløb <- as.numeric(kommunaleudgifter_data$Beløb)
+
+#Kontrol
+print(paste("Data indlæst. Antal rækker:", nrow(kommunaleudgifter_data)))
+
+
+
