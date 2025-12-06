@@ -71,14 +71,14 @@ kommunaleudgifter_data$Politikområde <- sub("^[0-9.]+\\s+", "", kommunaleudgift
 
 # Opretter hovedstruktur med navigationsfaner samt navngivning af siden
 ui <- navbarPage(
-  "Hvad bruger din kommune pengene på?",
+  "",
   
   ##SIDE 1: UDVIKLINGEN I KOMMUNALE UDGIFTER##
-
+  
   # Opretter første fane samt navngivning af denne fane
   tabPanel(
     "Udviklingen i kommunale udgifter",
-
+    
     
     # Ændring af skrifttype
     tags$head(
@@ -86,54 +86,104 @@ ui <- navbarPage(
       * {
         font-family: 'Helvetica', 'Arial', sans-serif !important;
       }
+        .navbar-brand {
+      font-size: 14px !important;
+    }
+    .navbar-nav > li > a {
+      font-size: 12px !important;
+    }
+    
     "))
     ),
     
-        
-    # Del siden i to: sidebar (venstre) og mainPanel (højre)
-    sidebarLayout(
+    # Overskrift
+    fluidRow(
+      style = "margin-left: 100px; margin-right: 100px; margin-top: 30px; margin-bottom: 5px;",
+      column(
+        width = 12,
+        h1("Hvad bruger din kommune pengene på?", style = "font-size: 22px; font-weight: bold; font-family: 'Helvetica', 'Arial', sans-serif;")
+      )
+    ),
+    
+    # Introtekst
+    fluidRow(
+      style = "margin-left: 100px; margin-right: 100px; margin-bottom: 40px;",
+      column(
+        width = 12,
+        p("Få overblik over kommunale udgifter i danske kommuner målt per. indbygger. Vælg en eller flere kommuner og et politikområde for at se udviklingen fra 2016-2024.", 
+          style = "font-size: 13px; color: #000000; font-family: 'Helvetica', 'Arial', sans-serif;")
+      )
+    ),
+    
+    # Filtersektion øverst
+    fluidRow(
+      style = "background-color: #f5f5f5; padding: 15px; margin-bottom: 10px; font-size: 12px; margin-left: 100px; margin-right: 100px;",
       
-      # Definerer venstre side
-      sidebarPanel(
-        width = 3,
-        
-        # Tilføj drop-down til valg af kommune, der kan vælges flere kommuner
+      column(
+        width = 6,
         selectInput(
           inputId = "valgte_kommuner",      
           label = "Vælg kommuner:",         
           choices = NULL,                   
           multiple = TRUE                   
-        ),
-        
-        # Tilføj drop-down til valg af politikområde, der kan kun vælges et politikområde ad gangen
+        )
+      ),
+      
+      column(
+        width = 6,
         selectInput(
           inputId = "valgt_politikområde",
           label = "Vælg politikområde:",
           choices = NULL,                   
           multiple = FALSE                 
         )
-      ), 
-      
-      
-      # Definer højre side samt oprettelse af graf
-      mainPanel(
-        width = 9,
-        plotlyOutput("udgifts_graf", height = "500px")
       )
-    )
+    ),
+    
+    # Graf nedenunder
+    fluidRow(
+      style = "margin-left: 100px; margin-right: 100px; margin-bottom: 80px;",
+      column(
+        width = 12,
+        plotlyOutput("udgifts_graf", height = "450px")
+      )
+    ) 
+   
   ),
-
+  
+  
+  
   
   ##SIDE 2: OM DATA##
   # Opretter anden fane samt navngivning af denne
   tabPanel(
     "Om data og metode",
+     
+    # Ændring af skrifttype
+    tags$head(
+      tags$style(HTML("
+    * {
+      font-family: 'Helvetica', 'Arial', sans-serif !important;
+    }
+    h2 {
+      font-size: 22px !important;
+      font-weight: bold !important;
+    }
+    h3 {
+      font-size: 14px !important;
+      font-weight: bold !important;
+    }
+  "))
+    ),
     
     # Opretter række og kolonner
+        
     fluidRow(
+      style = "margin-left: 100px; margin-right: 100px; margin-top: 30px;",
       column(
-        width = 10,
-        offset = 1,
+        width = 12,
+        style = "font-size: 12.5px;",
+            
         
         # Opretter overskrift og linjeskift
         h2("Om data og metode"),
@@ -231,20 +281,36 @@ server <- function(input, output, session) {
       geom_point(size = 3) +
       
       # Vælger tema 
-      theme_minimal(base_size = 14, base_family = "Helvetica") +
+      theme_minimal(base_size = 10, base_family = "Helvetica") +
       
       # Sætter titler på graf og akser
-      labs(title = input$valgt_politikområde, x = "År", y = "Kroner per indbygger", color = "Kommune") +
+      labs(title = "", x = "År", y = "Kroner per indbygger", color = "Kommune") +
       
       # Formaterer y-aksen
       scale_y_continuous(labels = scales::comma_format(big.mark = ".", decimal.mark = ",")) +
       
       # Placerer legend til højre og gør titlen fed
-      theme(legend.position = "right", plot.title = element_text(size = 16, face = "bold"))
+      theme(
+        legend.position = "right", 
+        plot.title = element_text(size = 14, face = "bold"),
+        axis.title = element_text(size = 9),        # Størrelse på "År" og "Kroner per indbygger"
+        axis.text = element_text(size = 9),          # Størrelse på årstal og beløb på akserne
+        legend.text = element_text(size = 9),        # Størrelse på kommunenavne i legend
+        legend.title = element_text(size = 9)       # Størrelse på "Kommune" titel
+      )
     
     # Konverterer ggplot til interaktiv plotly graf med hover-effekt
     ggplotly(p, tooltip = c("x", "y", "colour")) %>% 
-      layout(hovermode = "x unified") %>%
+      layout(
+        hovermode = "x unified",
+        margin = list(l = 60, r = 60, t = 80, b = 50),
+        title = list(
+          text = paste("Udgifter til", tolower(input$valgt_politikområde)),
+          x = 0,
+          xanchor = "left",
+          font = list(size = 13, family = "Helvetica")
+        )
+      ) %>%
       config(displayModeBar = FALSE)
   })
 }
@@ -255,7 +321,3 @@ server <- function(input, output, session) {
 
 # Starter Shiny appen
 shinyApp(ui = ui, server = server)
-
-
-
-
