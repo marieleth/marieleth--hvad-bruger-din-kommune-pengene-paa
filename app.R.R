@@ -191,7 +191,7 @@ ui <- navbarPage(
         
         # Opretter underoverskrift og tekstafsnit samt linjeskift
         h3("Datakilde"),
-        p("Sammenligningsværktøjet bygger på data fra Danmarks Statistik, tabel REGK31 Kommunernes regnskaber på funktioner - efter område, funktion, dranst, art og prisenhed"),
+        p("Sammenligningsværktøjet bygger på data fra Danmarks Statistik, tabel REGK31 - Kommunernes regnskaber på funktioner - efter område, funktion, dranst, art og prisenhed."),
         p("Alle beløb er opgjort i kroner per indbygger i løbende priser."),
         br(),
         
